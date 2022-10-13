@@ -1,15 +1,12 @@
 #!/bin/bash
 
-mkdir -p /mnt/github/dockerfiles
-mkdir -p /mnt/gold/dockerfiles
+mkdir -p /mnt/jessfraz/dockerfiles
 
 echo "Extracting..."
-tar -xJf /mnt/inputs/github.tar.xz -C /mnt/github/dockerfiles
-tar -xJf /mnt/inputs/gold.tar.xz -C /mnt/gold/dockerfiles
+tar -xJf /mnt/inputs/jessfraz.tar.xz -C /mnt/jessfraz/dockerfiles
 echo "  + Done!"
 
-find /mnt/github/dockerfiles -type f | sort \
-  | python3 /app/app.py github
+ls /mnt/jessfraz/dockerfiles
 
-find /mnt/gold/dockerfiles -type f | sort \
-  | python3 /app/app.py gold
+find /mnt/jessfraz/dockerfiles -type f | \
+    python3 /app/app.py jessfraz
