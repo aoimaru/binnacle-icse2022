@@ -7,30 +7,32 @@ if __name__ == '__main__':
   import dockerfile
   import multiprocessing
 
+  import pprint
 
   def process(item):
     VALID_DIRECTIVES = [
-      'from',
-      'run',
-      'cmd',
-      'label',
-      'maintainer',
-      'expose',
-      'env',
-      'add',
-      'copy',
-      'entrypoint',
-      'volume',
-      'user',
-      'workdir',
-      'arg',
-      'onbuild',
-      'stopsignal',
-      'healthcheck',
-      'shell'
+      'FROM',
+      'RUN',
+      'CMD',
+      'LABEL',
+      'MAINTAINER',
+      'EXPOSE',
+      'ENV',
+      'ADD',
+      'COPY',
+      'ENTRYPOINT',
+      'VOLUME',
+      'USER',
+      'WORKDIR',
+      'ARGS',
+      'ONBUILD',
+      'STOPSIGNAL',
+      'HEALTHCHECK',
+      'SHELL'
     ]
 
     try:
+      print("****** def process(item) -> OK ******")
       parsed = item[0]
 
       dockerfile_ast = {
@@ -44,7 +46,7 @@ if __name__ == '__main__':
           # Not valid dockerfile
           raise Exception('found invalid directive {}'.format(directive.cmd))
 
-        if directive.cmd == 'run':
+        if directive.cmd == 'RUN':
           dockerfile_ast['children'].append({
             'type': 'DOCKER-RUN',
             'children': [{
@@ -53,7 +55,7 @@ if __name__ == '__main__':
               'children': []
             }]
           })
-        elif directive.cmd == 'from':
+        elif directive.cmd == 'FROM':
           from_node = {
             'type': 'DOCKER-FROM',
             'children': []
@@ -84,7 +86,7 @@ if __name__ == '__main__':
             })
         
           dockerfile_ast['children'].append(from_node)
-        elif directive.cmd == 'copy':
+        elif directive.cmd == 'COPY':
           copy_node = {
             'type': 'DOCKER-COPY',
             'children': []
@@ -110,7 +112,7 @@ if __name__ == '__main__':
             })
           
           dockerfile_ast['children'].append(copy_node)
-        elif directive.cmd == 'add':
+        elif directive.cmd == 'ADD':
           add_node = {
             'type': 'DOCKER-ADD',
             'children': []
@@ -136,7 +138,7 @@ if __name__ == '__main__':
             })
           
           dockerfile_ast['children'].append(add_node)
-        elif directive.cmd == 'expose':
+        elif directive.cmd == 'EXPOSE':
           dockerfile_ast['children'].append({
             'type': 'DOCKER-EXPOSE',
             'children': [{
@@ -145,7 +147,7 @@ if __name__ == '__main__':
               'children': []
             }]
           })
-        elif directive.cmd == 'workdir':
+        elif directive.cmd == 'WORKDIR':
           dockerfile_ast['children'].append({
             'type': 'DOCKER-WORKDIR',
             'children': [{
@@ -154,7 +156,7 @@ if __name__ == '__main__':
               'children': []
             }]
           })
-        elif directive.cmd == 'volume':
+        elif directive.cmd == 'VOLUME':
           for arg in directive.value:
             dockerfile_ast['children'].append({
               'type': 'DOCKER-VOLUME',
@@ -164,7 +166,7 @@ if __name__ == '__main__':
                 'children': []
               }]
             })
-        elif directive.cmd == 'arg':
+        elif directive.cmd == 'ARG':
           arg_node = {
             'type': 'DOCKER-ARG',
             'children': [{
@@ -182,7 +184,7 @@ if __name__ == '__main__':
             })
 
           dockerfile_ast['children'].append(arg_node)
-        elif directive.cmd == 'env':
+        elif directive.cmd == 'ENV':
           for name, value in zip(directive.value[::2], directive.value[1::2]):
             dockerfile_ast['children'].append({
               'type': 'DOCKER-ENV',
@@ -196,7 +198,7 @@ if __name__ == '__main__':
                 'children': []
               }]
             })
-        elif directive.cmd == 'entrypoint':
+        elif directive.cmd == 'ENTRYPOINT':
           first = directive.value[0]
 
           entrypoint_node = {
@@ -216,7 +218,7 @@ if __name__ == '__main__':
             })
 
           dockerfile_ast['children'].append(entrypoint_node)
-        elif directive.cmd == 'cmd':
+        elif directive.cmd == 'CMD':
           cmd_node = {
             'type': 'DOCKER-CMD',
             'children': []
@@ -230,7 +232,7 @@ if __name__ == '__main__':
             })
 
           dockerfile_ast['children'].append(cmd_node)
-        elif directive.cmd == 'shell':
+        elif directive.cmd == 'SHELL':
           first = directive.value[0]
 
           shell_node = {
@@ -250,7 +252,7 @@ if __name__ == '__main__':
             })
 
           dockerfile_ast['children'].append(shell_node)
-        elif directive.cmd == 'user':
+        elif directive.cmd == 'USER':
           dockerfile_ast['children'].append({
             'type': 'DOCKER-USER',
             'children': [{
@@ -264,6 +266,8 @@ if __name__ == '__main__':
         '.Dockerfile', ''
       ).strip()
 
+      pprint.pprint(dockerfile_ast)
+      
       return json.dumps(dockerfile_ast)
 
     except Exception as ex:
@@ -274,13 +278,16 @@ if __name__ == '__main__':
 
   all_lines = []
   for line in sys.stdin:
+    print(line)
     with open(line.strip()) as dfh:
       try:
+        print("******OK******")
         all_lines.append((
           dockerfile.parse_string(dfh.read()),
           line.strip()
         ))
-      except Exception:
+      except Exception as e:
+        print(e)
         continue
     
   results = pool.imap(process, all_lines, chunksize=500)
