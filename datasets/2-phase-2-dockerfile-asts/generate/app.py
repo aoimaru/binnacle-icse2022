@@ -65,21 +65,9 @@ if __name__ == '__main__':
 
 
   pool = multiprocessing.Pool()
-
-
-  with lzma.open('/mnt/outputs/github.jsonl.xz', mode='wt') as out_file:
-    with lzma.open('/mnt/inputs/github.jsonl.xz', mode='rt') as file:
-      
-      all_lines = file.readlines()
-
-      results = pool.imap(process, all_lines, chunksize=500)
-
-      for result in tqdm.tqdm(results, total=len(all_lines), desc="Generating"):
-        out_file.write('{}\n'.format(result))
-
-
-  with lzma.open('/mnt/outputs/gold.jsonl.xz', mode='wt') as out_file:
-    with lzma.open('/mnt/inputs/gold.jsonl.xz', mode='rt') as file:
+  
+  with lzma.open('/mnt/outputs/jessfraz.jsonl.xz', mode='wt') as out_file:
+    with lzma.open('/mnt/inputs/jessfraz.jsonl.xz', mode='rt') as file:
       
       all_lines = file.readlines()
 

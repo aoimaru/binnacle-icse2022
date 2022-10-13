@@ -16,6 +16,5 @@ def main():
         dst_file_path = "{root_path}/_patch/{file_name}".format(root_path=ROOT_PATH, file_name=new_file_name)
         shutil.copyfile(file_path, dst_file_path)
 
-
 if __name__ == "__main__":
     main()
