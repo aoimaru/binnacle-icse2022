@@ -5,3 +5,5 @@ datasets/0b-deduplicated-dockerfile-sources
 
 datasets/jessfraz/
 datasets/vimagick/
+
+*.jsonl
