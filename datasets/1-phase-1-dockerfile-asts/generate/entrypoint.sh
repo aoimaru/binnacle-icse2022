@@ -1,12 +1,15 @@
 #!/bin/bash
 
-mkdir -p /mnt/jessfraz/dockerfiles
+TARGET=$1
+
+mkdir -p /mnt/$TARGET/dockerfiles
 
 echo "Extracting..."
-tar -xJf /mnt/inputs/jessfraz.tar.xz -C /mnt/jessfraz/dockerfiles
+ls /mnt/inputs
+tar -xJf /mnt/inputs/$TARGET.tar.xz -C /mnt/$TARGET/dockerfiles
 echo "  + Done!"
 
-ls /mnt/jessfraz/dockerfiles
+ls /mnt/$TARGET/dockerfiles
 
-find /mnt/jessfraz/dockerfiles -type f | \
-    python3 /app/app.py jessfraz
+find /mnt/$TARGET/dockerfiles -type f | \
+    python3 /app/app.py $TARGET

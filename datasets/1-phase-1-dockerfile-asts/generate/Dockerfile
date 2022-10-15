@@ -8,4 +8,7 @@ RUN pip install --no-cache dockerfile tqdm
 
 COPY . /app/
 
-ENTRYPOINT [ "/app/entrypoint.sh" ]
+ARG TARGET
+ENV TARGET ${TARGET}
+
+ENTRYPOINT "/app/entrypoint.sh" $TARGET
