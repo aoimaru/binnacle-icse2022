@@ -8,4 +8,7 @@ RUN pip install --no-cache tqdm
 
 COPY . /app/
 
-ENTRYPOINT [ "python3", "/app/app.py" ]
+ARG TARGET
+ENV TARGET ${TARGET}
+
+ENTRYPOINT "python3" "/app/app.py" $TARGET
