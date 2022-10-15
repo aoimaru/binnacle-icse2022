@@ -23,6 +23,9 @@ COPY enrich/ /app/enrich/
 
 COPY app.ts ast.ts app.py tsconfig.json /app/
 
-RUN tsc 
+RUN tsc
 
-ENTRYPOINT [ "python3", "/app/app.py" ]
+ARG TARGET
+ENV TARGET ${TARGET}
+
+ENTRYPOINT "python3" "/app/app.py" $TARGET

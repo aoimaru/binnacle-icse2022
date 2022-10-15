@@ -1,30 +1,31 @@
-if __name__ == '__main__':
-  import os
-  import sys
-  import json
-  import lzma
-  import tqdm
-  import subprocess
-  import multiprocessing
+import os
+import sys
+import json
+import lzma
+import tqdm
+import subprocess
+import multiprocessing
 
 
-  def enrich(ast_str):
-    as_json = json.loads(ast_str)
-    parsed = { 'type': 'UNKNOWN', 'children': [] } # Start with nothing
-    try:
-      # Try and do real parse
-      parsed = json.loads(subprocess.check_output(
-        [ 'node', '/build/app.js' ],
-        input=ast_str.encode('utf-8')
-      ).decode('utf-8'))
-    except Exception:
-      pass
-    
-    parsed['file_sha'] = as_json['file_sha']
-    return json.dumps(parsed)
+def enrich(ast_str):
+  as_json = json.loads(ast_str)
+  parsed = { 'type': 'UNKNOWN', 'children': [] } # Start with nothing
+  try:
+    # Try and do real parse
+    parsed = json.loads(subprocess.check_output(
+      [ 'node', '/build/app.js' ],
+      input=ast_str.encode('utf-8')
+    ).decode('utf-8'))
+  except Exception:
+    pass
   
-  with lzma.open('/mnt/outputs/jessfraz.jsonl.xz', mode='wt') as out_file:
-    with lzma.open('/mnt/inputs/jessfraz.jsonl.xz', mode='rt') as file:
+  parsed['file_sha'] = as_json['file_sha']
+  return json.dumps(parsed)
+  
+
+def main(args):
+  with lzma.open('/mnt/outputs/{target}.jsonl.xz'.format(target=args[1]), mode='wt') as out_file:
+    with lzma.open('/mnt/inputs/{target}.jsonl.xz'.format(target=args[1]), mode='rt') as file:
       pool = multiprocessing.Pool()
       
       all_lines = file.readlines()
@@ -35,3 +36,5 @@ if __name__ == '__main__':
       for result in tqdm.tqdm(results, total=length, desc="Generating"):
         out_file.write('{}\n'.format(result))
 
+if __name__ == "__main__":
+  main(sys.argv)
