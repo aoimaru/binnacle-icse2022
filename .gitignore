@@ -2,3 +2,6 @@ datasets/0a-original-dockerfile-sources
 datasets/0b-deduplicated-dockerfile-sources
 *.jsonl.xz
 *.tar.xz
+
+datasets/jessfraz/
+datasets/vimagick/
