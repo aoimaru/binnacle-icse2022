@@ -14,6 +14,6 @@ docker build -t binnacle/artifact:generate-phase-1 \
 time docker run \
   -it \
   --rm \
-  -v "${DIR}/../0b-deduplicated-dockerfile-sources:/mnt/inputs" \
+  -v "${DIR}/../0b-deduplicated-dockerfile-sources/${TARGET}.tar.xz:/mnt/inputs/${TARGET}.tar.xz" \
   -v "${DIR}:/mnt/outputs" \
   binnacle/artifact:generate-phase-1

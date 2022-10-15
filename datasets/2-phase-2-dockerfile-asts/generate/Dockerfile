@@ -27,4 +27,7 @@ COPY filter-*.jq /filters/
 
 COPY app.py /app.py
 
-ENTRYPOINT [ "python3", "/app.py" ]
+ARG TARGET
+ENV TARGET ${TARGET}
+
+ENTRYPOINT "python3" "/app.py" $TARGET
