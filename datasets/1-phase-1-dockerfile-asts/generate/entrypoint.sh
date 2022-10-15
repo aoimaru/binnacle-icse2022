@@ -5,6 +5,7 @@ TARGET=$1
 mkdir -p /mnt/$TARGET/dockerfiles
 
 echo "Extracting..."
+echo "patch..........."
 ls /mnt/inputs
 tar -xJf /mnt/inputs/$TARGET.tar.xz -C /mnt/$TARGET/dockerfiles
 echo "  + Done!"
